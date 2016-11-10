@@ -1,16 +1,21 @@
 {
-  "name": "NodejsStarterApp",
+  "name": "spymaster",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
+    "express": "4.13.x",
     "cfenv": "1.0.x",
-    "express": "^4.14.0"
+    "async": "2.1.x"
   },
   "repository": {},
   "engines": {
     "node": "4.x"
-  }
+  },
+  "description": "SpyMaster Game",
+  "main": "app.js",
+  "author": "Kevin Dang",
+  "license": "ISC"
 }
