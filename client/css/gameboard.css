@@ -201,3 +201,51 @@ td {
   text-align: center;
   margin-bottom: 20px;
 }
+
+.about-me {
+  color: #ddd;
+  bottom: 0;
+  float: right;
+  font-size: 20px;
+  padding-right: 14px;
+  cursor: pointer;
+}
+
+.about-box {
+  font-family: monospace;
+  background-color: #1c333f;
+  color: #ddd;
+  width: 310px;
+}
+
+.purple {
+  color: #bb80b3;
+}
+
+.teal {
+  color: #5fb3b3;
+}
+
+.green {
+  color: #99c794;
+}
+
+.red {
+  color: #eb606b;
+}
+
+.bluemix {
+  height: 34px;
+  float: left;
+}
+
+.angular {
+  height: 34px;
+  float: left;
+  margin: 0 14px;
+}
+
+.nodejs {
+  height: 34px;
+  float: left;
+}
