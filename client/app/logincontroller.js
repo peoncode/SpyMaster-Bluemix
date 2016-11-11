@@ -9,7 +9,7 @@
 
     $scope.playAsSpy = function() {
       console.log("SPY Game!");
-      //$location.path("/gameSpy");
+      $location.path("/gameSpy");
     };
 
 
