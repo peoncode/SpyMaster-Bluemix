@@ -1,7 +1,7 @@
 <div>
 
   <div class="container-fluid no-select">
-    <div class="row score-row">
+    <div class="row score-row" ng-hide="isSpyMaster">
       <div class="col-xs-1"></div>
       <div class="col-xs-2 pad_lr score-blue">BLUE: {{blueScore}}</div>
       <div class="col-xs-1"><span class="glyphicon glyphicon-arrow-left flash-arrow" ng-show="whosTurn=='blue'"></span><span class="score-winner" ng-show="blueWins">WIN!</span></div>
@@ -12,7 +12,16 @@
       <div id="dLabelR" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="optionsmenu glyphicon glyphicon-option-vertical"></div>
         <ul class="menuitem dropdown-menu dropdown-menu-right" aria-labelledby="dLabelR">GameId: {{gameId}}</ul></div></div>
     </div>
-    <div class="row score-row">
+
+    <div class="row score-row" ng-show="isSpyMaster">
+      <div class="col-xs-1"></div>
+      <div class="col-xs-10 pad_lr"><div class="score-status">SpyMaster - GameId: {{gameId}}</div></div>     
+      <div class="col-xs-1"><div class="dropdown">
+      <div id="dLabelR" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="optionsmenu glyphicon glyphicon-option-vertical"></div>
+        <ul class="menuitem dropdown-menu dropdown-menu-right" aria-labelledby="dLabelR">GameId: {{gameId}}</ul></div></div>
+    </div>
+
+    <div class="row score-row" ng-hide="isSpyMaster">
       <div class="col-xs-1"></div>
       <div class="col-xs-2 pad_lr"><table><tr>
                                       <td ng-hide="blueCardsOpen >= 1"></td>

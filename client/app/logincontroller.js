@@ -8,8 +8,8 @@
 
 
     $scope.playAsSpy = function() {
-      console.log("SPY Game!");
-      $location.path("/gameSpy");
+      //console.log("SPY Game! " + $scope.spyGameId);
+      $location.path("/gameSpy/" + $scope.spyGameId);
     };
 
 

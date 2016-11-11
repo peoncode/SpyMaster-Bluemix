@@ -1,34 +1,12 @@
 
 (function() {
 
-function GameBoardCtrl($scope, gameDataService) {
-
-
-  
-  gameDataService.getData(function (err, gameData) {
-    if (err) {
-      $scope.page_load_error = "Unexpected error loading game data: " + err.message;
-      return;
-    }
-    else {
-      $scope.gameId = gameData["gameId"];
-      $scope.whoStarts = gameData["whoStarts"];
-      $scope.cardList = JSON.parse(JSON.stringify(gameData["cardList"]));
-      $scope.gameRound = 1;
-      $scope.blueScore = 0;
-      $scope.redScore = 0;
-      $scope.blueCardsOpen = 0;
-      $scope.redCardsOpen = 0;
-      $scope.blueWins = false;
-      $scope.redWins = false;
-      $scope.whosTurn = $scope.whoStarts;
-    }
-  });  
+function GameBoardCtrl($scope, gameDataService, $routeParams) {
    
   $scope.revealCard = function(index) {
     var card = $scope.cardList[index];
 
-    console.log("reveal pressed: " + card.name + " [" + card.team + "]");
+    //console.log("reveal pressed: " + card.name + " [" + card.team + "]");
     card.cardColor = card.team + "card";
     card.isRevealed = true;
 
@@ -38,13 +16,13 @@ function GameBoardCtrl($scope, gameDataService) {
       if (($scope.whoStarts == "blue" && $scope.blueCardsOpen == 9) ||
           ($scope.whoStarts == "red" && $scope.blueCardsOpen == 8)) {
         blueWins();
-        gameOver();
+        roundOver();
         return;
       }
 
       if ($scope.whosTurn != card.team) {
         $scope.whosTurn = "blue";
-        console.log("OOPS! Switch to Blue Team's turn");
+        // console.log("OOPS! Switch to Blue Team's turn");
       }
     }
     else if (card.team == "red") {
@@ -53,23 +31,23 @@ function GameBoardCtrl($scope, gameDataService) {
       if (($scope.whoStarts == "red" && $scope.redCardsOpen == 9) ||
           ($scope.whoStarts == "blue" && $scope.redCardsOpen == 8)) {
         redWins();
-        gameOver();
+        roundOver();
         return;
       }
 
       if ($scope.whosTurn != card.team) {
         $scope.whosTurn = "red";
-        console.log("OOPS! Switch to Red Team's turn");
+        // console.log("OOPS! Switch to Red Team's turn");
       }
     }
     else if (card.team == "yellow") { //switch teams
       if ($scope.whosTurn == "blue") {
         $scope.whosTurn = "red";
-        console.log("NOPE! Switch to Red Team's turn");
+        // console.log("NOPE! Switch to Red Team's turn");
       }
       else {
         $scope.whosTurn = "blue";
-        console.log("NOPE! Switch to Blue Team's turn");
+        //console.log("NOPE! Switch to Blue Team's turn");
       }
     }
     else {  //black card!
@@ -80,7 +58,7 @@ function GameBoardCtrl($scope, gameDataService) {
         redWins();
       }
 
-      gameOver();
+      roundOver();
       return;
     }    
   }
@@ -95,7 +73,7 @@ function GameBoardCtrl($scope, gameDataService) {
     $scope.redScore++;
   }
 
-  function gameOver() {
+  function roundOver() {
     for (var i in $scope.cardList) {
       $scope.cardList[i].isRevealed = true;
     }
@@ -108,48 +86,61 @@ function GameBoardCtrl($scope, gameDataService) {
       console.log("Game over. RED wins!");
     }
 
+    gameDataService.deleteGame($scope.gameId);
+
     $scope.gameRound++;
   }
 
-  $scope.newRound = function() {
-    console.log("Preparing New round");
-    gameDataService.getData(function (err, gameData) {
-      if (err) {
-        $scope.page_load_error = "Unexpected error loading game data: " + err.message;
-        return;
-      }
-      else {
-        // $scope.gameRound = gameData["gameRound"];
-        // $scope.blueScore = gameData["blueScore"];
-        // $scope.redScore = gameData["redScore"];
-        $scope.gameId = gameData["gameId"];
-        $scope.whoStarts = gameData["whoStarts"];
-        $scope.cardList = JSON.parse(JSON.stringify(gameData["cardList"]));
-        $scope.blueCardsOpen = 0;
-        $scope.redCardsOpen = 0;
-        $scope.blueWins = false;
-        $scope.redWins = false;
-        $scope.whosTurn = $scope.whoStarts;
-      }
-    });  
+  $scope.newRound = function(gameId) {
+    // console.log("Preparing New round");
+    if (gameId) {
+       $scope.isSpyMaster = true;
+       $scope.gameId = gameId;
+       gameDataService.getGameById(gameId, function (err, gameData) {
+          if (err) {
+            $scope.page_load_error = "Unexpected error loading game data: " + err.message;
+            return;
+          }
+          else {
+            $scope.whoStarts = gameData["whoStarts"];
+            $scope.cardList = JSON.parse(JSON.stringify(gameData["cardList"]));
+            $scope.blueCardsOpen = 0;
+            $scope.redCardsOpen = 0;
+            $scope.blueWins = false;
+            $scope.redWins = false;
+            $scope.whosTurn = $scope.whoStarts;
 
+            console.log("SpyMaster monitoring [" + $scope.gameId + "]");
+          }
+       });
+    }
+    else
+    {
+      gameDataService.getNewData(function (err, gameData) {
+        if (err) {
+          $scope.page_load_error = "Unexpected error loading game data: " + err.message;
+          return;
+        }
+        else {
+          $scope.gameId = gameData["gameId"];
+          $scope.whoStarts = gameData["whoStarts"];
+          $scope.cardList = JSON.parse(JSON.stringify(gameData["cardList"]));
+          $scope.blueCardsOpen = 0;
+          $scope.redCardsOpen = 0;
+          $scope.blueWins = false;
+          $scope.redWins = false;
+          $scope.whosTurn = $scope.whoStarts;
 
-
-
-    // $scope.gameRound = gameDataService.getData()["gameRound"];
-    //$scope.gameId = gameData["gameId"];
-    //$scope.whoStarts = gameDataService.getData()["whoStarts"];
-    // $scope.redScore = gameDataService.getData()["redScore"];
-    // $scope.blueScore = gameDataService.getData()["blueScore"];
-    //$scope.cardList = JSON.parse(JSON.stringify(gameDataService.getData()["cardList"]));
-    // $scope.blueWins = false;
-    // $scope.redWins = false;
-    // $scope.redCardsOpen = 0;
-    // $scope.blueCardsOpen = 0;
-    // $scope.whosTurn = $scope.whoStarts;
-
-    console.log("after: Starting ROUND " + $scope.gameRound);
+          console.log("Starting Round " + $scope.gameRound + " [" + $scope.gameId + "]");
+        }
+      });  
+    }
   }
+
+  $scope.gameRound = 1;
+  $scope.blueScore = 0;
+  $scope.redScore = 0;
+  $scope.newRound($routeParams.gameSpyId);
 }
 
 mainApp.controller('GameBoardCtrl', GameBoardCtrl);
