@@ -1,5 +1,8 @@
 <div ng-controller="LoginCtrl">
-<center><div class="menublock panel panel-default">
+<center>
+
+  <div class="alert alert-danger alert-dismissible errormsg" role="alert" ng-show="errmsg">{{errmsg}}</div>
+  <div class="menublock panel panel-default">
   <div class="panel-body">
   <div class="titleFont">SpyMaster Game</div>
   <button type="button" ng-click="newGame()" class="btn btn-primary btn-lg btn-block">Start a New Game</button>

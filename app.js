@@ -44,6 +44,7 @@ app.get("/v1/gameData.json/:gameId", function (req, res) {
     }
     else {
       console.log("ERROR: gameId=" + gameId + " is not current in play!");
+      send_error_resp(res, {"message": "GameId " + gameId + " is not found."});
     }
   }
 });
@@ -51,10 +52,7 @@ app.get("/v1/gameData.json/:gameId", function (req, res) {
 app.delete("/v1/game/:gameId", function (req, res) {
   if (req.params["gameId"]) {
     var gameId = req.params["gameId"];
-    if (currentGames[gameId]) {
-      delete currentGames[gameId];
-      console.log("Deleted " + gameId);
-    }
+    deleteGameById(gameId);
   }
 });
 
@@ -73,6 +71,7 @@ function getGameData() {
     console.log("Starting Game " + gameId + ", " + retObj.whoStarts.toUpperCase());
     currentGames[gameId] = data;
     //console.log("Current Games running: " + JSON.stringify(currentGames));
+    setTimeout(deleteGameById, 60*60*1000, gameId);  //automatically delete game after 60 mins
     return data;
 }
 
@@ -97,7 +96,7 @@ function getRandom25() {
      }
    }
 
-   return { "whoStarts":colorIdx?"red":"blue", "data": array };
+   return { "whoStarts":colorIdx?"blue":"red", "data": array };
 }
 
 function shuffle(array) {
@@ -118,6 +117,13 @@ function shuffle(array) {
   return array;
 }
 
+function deleteGameById(gameId) {
+  if (currentGames[gameId]) {
+      delete currentGames[gameId];
+      console.log("Deleted " + gameId);
+  }
+}
+
 function send_success_resp(res, obj) {
     if (arguments.length != 2) {
         console.error("send_success_resp: YOU'RE DOING IT WRONG");
@@ -125,6 +131,16 @@ function send_success_resp(res, obj) {
     }
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(obj));
+    res.end();
+}
+
+function send_error_resp(res, obj) {
+    if (arguments.length != 2) {
+        console.error("send_success_resp: YOU'RE DOING IT WRONG");
+        throw new Error();
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.status(404).send(JSON.stringify(obj));
     res.end();
 }
 
